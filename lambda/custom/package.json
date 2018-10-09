@@ -1,0 +1,15 @@
+{
+  "name": "rainbow_words",
+  "version": "1.0.0",
+  "description": "Basic Alexa Skill to help children with words.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Rongholt",
+  "license": "ISC",
+  "dependencies": {
+    "ask-sdk": "^2.0.7",
+    "ask-sdk-model": "^1.3.1"
+    }
+}

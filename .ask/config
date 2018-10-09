@@ -1,0 +1,50 @@
+{
+  "deploy_settings": {
+    "default": {
+      "skill_id": "amzn1.ask.skill.3c3af930-4791-4075-87f0-bba25e528630",
+      "was_cloned": false,
+      "merge": {
+        "manifest": {
+          "apis": {
+            "custom": {
+              "endpoint": {
+                "uri": "rainbow_words"
+              }
+            }
+          }
+        }
+      },
+      "in_skill_products": [],
+      "resources": {
+        "manifest": {
+          "eTag": "48048fe1331dad2bee59c5bd3c3a976d"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "fa25ec042a35bca85c73fa2e89bd4b63"
+          }
+        },
+        "lambda": [
+          {
+            "arn": "arn:aws:lambda:us-east-1:837782226885:function:rainbow_words",
+            "functionName": "arn:aws:lambda:us-east-1:837782226885:function:rainbow_words",
+            "awsRegion": "us-east-1",
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "revisionId": "b94841ee-7fd6-4ef3-bb80-c0130cbe8594"
+          },
+          {
+            "arn": "arn:aws:lambda:us-east-1:837782226885:function:rainbow_words",
+            "functionName": "rainbow_words",
+            "awsRegion": "us-east-1",
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "revisionId": "a79f1370-6f98-44f3-b1dc-d21f7f5529af"
+          }
+        ]
+      }
+    }
+  }
+}

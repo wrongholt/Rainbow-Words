@@ -1,0 +1,43 @@
+{
+    "interactionModel": {
+      "languageModel": {
+        "invocationName": "rainbow words",
+        "types": [
+  
+        ],
+        "intents": [
+          {
+            "name": "AMAZON.CancelIntent",
+            "samples": [
+  
+            ]
+          },
+          {
+            "name": "AMAZON.HelpIntent",
+            "samples": [
+  
+            ]
+          },
+          {
+            "name": "AMAZON.StopIntent",
+            "samples": [
+  
+            ]
+          },{
+            "name": "GetWordsIntent"
+           
+          },
+          {
+            "name":"RainbowWordHandler",
+            "slots":[
+               
+            ],
+            "samples":[
+                "may i have another word"
+            ]
+        }
+        ]
+      }
+    }
+  }
+  

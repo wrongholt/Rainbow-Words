@@ -1,0 +1,46 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "summary": "For kids to learn words.",
+          "examplePhrases": [
+            "Alexa open rainbow words",
+            "Alexa tell rainbow words my name is Bill",
+            "Alexa ask rainbow words to start"
+          ],
+          "keywords": [
+            "keyword1",
+            "keyword2",
+            "keyword3"
+          ],
+          "name": "rainbow_words",
+          "description": "This is a skill for Kindergartners to learn how to spell and say certain words."
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "No special instructions.",
+      "category": "EDUCATION_AND_REFERENCE",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "sourceDir": "lambda/custom"
+        }
+      }
+    },
+    "manifestVersion": "1.0",
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "locales": {
+        "en-US": {
+         }
+      },
+      "isExportCompliant": true,
+      "containsAds": false,
+      "isChildDirected": false,
+      "usesPersonalInfo": false
+    }
+  }
+}
