@@ -2,7 +2,7 @@
 /* eslint-disable  no-console */
 
 const Alexa = require('ask-sdk');
-
+const i = 0;
 const RainbowWordHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
@@ -12,8 +12,8 @@ const RainbowWordHandler = {
 && request.intent.name === 'RainbowWordHandler');
   },
   async handle(handlerInput) {
-    const i = 0;
-    const colorValue = color[0];
+   
+    const colorValue = color[i];
     let speechText = `Hello you are on ${colorValue}. Get ready for your first word.`;
 
     const attributesManager = handlerInput.attributesManager;
@@ -21,7 +21,7 @@ const RainbowWordHandler = {
 
     const attributes = await attributesManager.getPersistentAttributes() || {};
    
-    
+    attributes.i = i;
       attributes.colorValue = colorValue;
       attributesManager.setPersistentAttributes(attributes);
       await attributesManager.savePersistentAttributes();
@@ -30,7 +30,9 @@ const RainbowWordHandler = {
     
     return responseBuilder
       .speak(speechText)
-      .withSimpleCard(`Welcome Rainbow Words`, "Where kids learn words with help of Alexa.");
+      .withSimpleCard(`Welcome Rainbow Words`, "Where kids learn words with help of Alexa.")
+      .getResponse();
+     
   },
 };
 const GetWordsIntent = {
@@ -42,16 +44,21 @@ const GetWordsIntent = {
   },
   async handle(handlerInput) {
     let speechText = `Please look at a device for your first word.`;
-
-    const attributesManager = handlerInput.attributesManager;
+var wordCounter = 0;
+const attributesManager = handlerInput.attributesManager;
     const responseBuilder = handlerInput.responseBuilder;
 
-    const attributes = await attributesManager.getPersistentAttributes() || {};
-    var randomWord = randomNoRepeats(color["Red"]);
     
-      attributes.colorValue = colorValue;
+    const attributes = await attributesManager.getPersistentAttributes() || {};
+      attributes.wordCounter = wordCounter;
       attributesManager.setPersistentAttributes(attributes);
       await attributesManager.savePersistentAttributes();
+
+      if(attributes.wordCounter < 30){
+        attributes.wordCounter++;
+         var randomWord = randomNoRepeats(words[i]);
+      }
+  
 
     return responseBuilder
     .speak(speechText)
@@ -129,17 +136,18 @@ exports.handler = skillBuilder
   .withAutoCreateTable(true)
   .lambda();
 
-  var color = {
-    'Red':['I', "a", "the", "can", "see", "like", "to", "and", "you", "big"],
-    'Orange':['in', "it", "is", "we", "me", "my", "run", "play", "say", "look"],
-    'Yellow':['for', "at", "am", "did", "little", "get", "well", "jump", "up", "on"],
-    'Dark Green':['help', "make", "ride", "down", "yes", "no", "so", "go", "he", "she", "be"],
-    'Light Green':['have', "our", "out", "saw", "all", "do", "come", "out", "eat", "they"],
-    'Blue':['with', "here", "find", "blue", "two", "away", "are", "but", "ate", "good"],
-    'Purple':['into', "this", "that", "there", "came", "red", "three", "too", "ran", "must"],
-    'Pink':['went', "black", "who", "what", "where", "white", "not", "said", "want", "brown"],
-    'White':['soon', "new", "now", "well", "funny", "yellow", "under", "pretty", "four", "was"]
-  };
+  var color = ['Red','Orange','Yellow', 'Dark Green', 'Light Green', "Blue", 'Purple', 'Pink', 'White'];
+  var words = [
+    ['I', "a", "the", "can", "see", "like", "to", "and", "you", "big"],
+    ['in', "it", "is", "we", "me", "my", "run", "play", "say", "look"],
+    ['for', "at", "am", "did", "little", "get", "well", "jump", "up", "on"],
+    ['help', "make", "ride", "down", "yes", "no", "so", "go", "he", "she", "be"],
+    ['have', "our", "out", "saw", "all", "do", "come", "out", "eat", "they"],
+    ['with', "here", "find", "blue", "two", "away", "are", "but", "ate", "good"],
+    ['into', "this", "that", "there", "came", "red", "three", "too", "ran", "must"],
+    ['went', "black", "who", "what", "where", "white", "not", "said", "want", "brown"],
+    ['soon', "new", "now", "well", "funny", "yellow", "under", "pretty", "four", "was"]
+  ];
   function randomNoRepeats(array) {
     var copy = array.slice(0);
     return function() {

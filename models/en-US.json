@@ -24,17 +24,16 @@
   
             ]
           },{
-            "name": "GetWordsIntent"
-           
+            "name": "GetWordsIntent",
+            "samples":[
+              "first word",
+              "word",
+              "another word"
+          ]
           },
           {
-            "name":"RainbowWordHandler",
-            "slots":[
-               
-            ],
-            "samples":[
-                "may i have another word"
-            ]
+            "name":"RainbowWordHandler"
+            
         }
         ]
       }
