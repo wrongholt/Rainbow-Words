@@ -14,7 +14,7 @@ const RainbowWordHandler = {
   async handle(handlerInput) {
    
     const colorValue = color[i];
-    let speechText = `Hello you are on ${colorValue}. Get ready for your first word.`;
+    let speechText = `Hello, you are on ${colorValue}. Get ready for your first word.`;
 
     const attributesManager = handlerInput.attributesManager;
     const responseBuilder = handlerInput.responseBuilder;
@@ -56,13 +56,13 @@ const attributesManager = handlerInput.attributesManager;
 
       if(attributes.wordCounter < 30){
         attributes.wordCounter++;
-         var randomWord = randomNoRepeats(words[i]);
+         var word = randomNoRepeats(words[i]);
       }
   
 
     return responseBuilder
     .speak(speechText)
-    .withSimpleCard(`${randomWord()}`)
+    .withSimpleCard(`${word()}`)
     .getResponse();
   },
 };
@@ -127,6 +127,7 @@ const skillBuilder = Alexa.SkillBuilders.standard();
 exports.handler = skillBuilder
   .addRequestHandlers(
     RainbowWordHandler,
+    GetWordsIntent,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler
@@ -158,3 +159,6 @@ exports.handler = skillBuilder
       return item;
     };
   }
+  
+  
+  

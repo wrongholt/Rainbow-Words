@@ -2,9 +2,7 @@
     "interactionModel": {
       "languageModel": {
         "invocationName": "rainbow words",
-        "types": [
-  
-        ],
+
         "intents": [
           {
             "name": "AMAZON.CancelIntent",
@@ -29,13 +27,105 @@
               "first word",
               "word",
               "another word"
+          ],
+          "slots":[
+            {
+              "name": "word",
+              "type": "WORD",
+              "samples":[
+                
+              ]
+            }
           ]
           },
           {
             "name":"RainbowWordHandler"
             
         }
-        ]
+        ],
+        "types": [{
+          "name":"WORD",
+          "values": [{
+           "name": {
+             "value": "I"
+           }
+         }, {
+           "name": {
+             "value": "a"
+           }
+         }, {
+           "name": {
+             "value": "the"
+           }
+         }, {
+           "name": {
+             "value": "can"
+           }
+         }, {
+           "name": {
+             "value": "see"
+           }
+         }, {
+           "name": {
+             "value": "like"
+           }
+         }, {
+           "name": {
+             "value": "to"
+           }
+         }, {
+           "name": {
+             "value": "and"
+           }
+         }, {
+           "name": {
+             "value": "you"
+           }
+         }, {
+           "name": {
+             "value": "big"
+           }
+         },{
+           "name": {
+             "value": "in"
+           }
+         }, {
+           "name": {
+             "value": "it"
+           }
+         }, {
+           "name": {
+             "value": "is"
+           }
+         }, {
+           "name": {
+             "value": "we"
+           }
+         }, {
+           "name": {
+             "value": "me"
+           }
+         }, {
+           "name": {
+             "value": "my"
+           }
+         }, {
+           "name": {
+             "value": "run"
+           }
+         }, {
+           "name": {
+             "value": "play"
+           }
+         }, {
+           "name": {
+             "value": "say"
+           }
+         }, {
+             "name": {
+               "value": "look"
+             }
+             }]}]
       }
     }
   }
