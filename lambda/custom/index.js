@@ -2,17 +2,44 @@
 /* eslint-disable  no-console */
 
 const Alexa = require('ask-sdk');
-const i = 0;
+
+const LaunchRequestHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === `LaunchRequest`;
+  },
+  handle(handlerInput) {
+    // if (has_display(request)) {
+    //   handlerInput.responseBuilder.directive({
+    //     "type": "Display.RenderTemplate",
+    //     "template": {
+    //       "type": "BodyTemplate6",
+    //       "backButton": "HIDDEN",
+    //       "backgroundImage": "https://www.publicdomainpictures.net/pictures/200000/velka/plain-red-background.jpg",
+    //       "textContent": {
+    //         "primaryText": {
+    //           "text": `Hello there mate!`,
+    //           "type": "PlainText"
+    //         }
+    //       }
+    //     }
+    //   });
+    // }
+    return handlerInput.responseBuilder
+      .speak(welcomeMessage)
+      .reprompt(helpMessage)
+      .withSimpleCard("Welcome")
+      .getResponse();
+  },
+};
 const RainbowWordHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
 
-    return request.type === 'LaunchRequest'
-      || (request.type === 'IntentRequest'
-&& request.intent.name === 'RainbowWordHandler');
+    return request.type === 'IntentRequest' &&
+      request.intent.name === 'RainbowWordHandler';
   },
   async handle(handlerInput) {
-   
+
     const colorValue = color[i];
     let speechText = `Hello, you are on ${colorValue}. Get ready for your first word.`;
 
@@ -20,57 +47,53 @@ const RainbowWordHandler = {
     const responseBuilder = handlerInput.responseBuilder;
 
     const attributes = await attributesManager.getPersistentAttributes() || {};
-   
+
     attributes.i = i;
-      attributes.colorValue = colorValue;
-      attributesManager.setPersistentAttributes(attributes);
-      await attributesManager.savePersistentAttributes();
-    
-    
-    
+    attributes.colorValue = colorValue;
+    attributes.wordCounter = wordCounter;
+
+    attributesManager.setPersistentAttributes(attributes);
+    await attributesManager.savePersistentAttributes();
+
+
+    // wordCounter++;
+    var word = randomNoRepeats(words[i]);
+     console.log(intent.GetWordsIntentHandler.slots.type.WORD.value.value)
+   
+
+
     return responseBuilder
       .speak(speechText)
-      .withSimpleCard(`Welcome Rainbow Words`, "Where kids learn words with help of Alexa.")
+      .withSimpleCard("Your word is...",`${word()}`)
       .getResponse();
-     
+
   },
 };
-const GetWordsIntent = {
+const GetWordsIntentHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
-
-    return (request.type === 'IntentRequest'
-&& request.intent.name === 'GetWordsIntent');
+    console.log("Inside WordsIntent");
+    return (request.type === 'IntentRequest' &&
+      request.intent.name === 'GetWordsIntent');
   },
   async handle(handlerInput) {
-    let speechText = `Please look at a device for your first word.`;
-var wordCounter = 0;
-const attributesManager = handlerInput.attributesManager;
-    const responseBuilder = handlerInput.responseBuilder;
 
-    
-    const attributes = await attributesManager.getPersistentAttributes() || {};
-      attributes.wordCounter = wordCounter;
-      attributesManager.setPersistentAttributes(attributes);
-      await attributesManager.savePersistentAttributes();
-
-      if(attributes.wordCounter < 30){
-        attributes.wordCounter++;
-         var word = randomNoRepeats(words[i]);
-      }
-  
-
-    return responseBuilder
-    .speak(speechText)
-    .withSimpleCard(`${word()}`)
-    .getResponse();
+    if (intent.slots.type.WORD.value == word()) {
+      return responseBuilder
+        .speak("That is correct!", `${word()}`)
+        .getResponse();
+    } else {
+      return responseBuilder
+        .speak(`${word()}`)
+        .getResponse();
+    }
   },
 };
 
 const HelpIntentHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
     const speechText = 'You can introduce yourself by telling me your name';
@@ -84,9 +107,9 @@ const HelpIntentHandler = {
 
 const CancelAndStopIntentHandler = {
   canHandle(handlerInput) {
-    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
-      && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
-        || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+      (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent' ||
+        handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
   },
   handle(handlerInput) {
     const speechText = 'Goodbye!';
@@ -126,8 +149,9 @@ const skillBuilder = Alexa.SkillBuilders.standard();
 
 exports.handler = skillBuilder
   .addRequestHandlers(
+    LaunchRequestHandler,
     RainbowWordHandler,
-    GetWordsIntent,
+    GetWordsIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler
@@ -137,28 +161,138 @@ exports.handler = skillBuilder
   .withAutoCreateTable(true)
   .lambda();
 
-  var color = ['Red','Orange','Yellow', 'Dark Green', 'Light Green', "Blue", 'Purple', 'Pink', 'White'];
-  var words = [
-    ['I', "a", "the", "can", "see", "like", "to", "and", "you", "big"],
-    ['in', "it", "is", "we", "me", "my", "run", "play", "say", "look"],
-    ['for', "at", "am", "did", "little", "get", "well", "jump", "up", "on"],
-    ['help', "make", "ride", "down", "yes", "no", "so", "go", "he", "she", "be"],
-    ['have', "our", "out", "saw", "all", "do", "come", "out", "eat", "they"],
-    ['with', "here", "find", "blue", "two", "away", "are", "but", "ate", "good"],
-    ['into', "this", "that", "there", "came", "red", "three", "too", "ran", "must"],
-    ['went', "black", "who", "what", "where", "white", "not", "said", "want", "brown"],
-    ['soon', "new", "now", "well", "funny", "yellow", "under", "pretty", "four", "was"]
-  ];
-  function randomNoRepeats(array) {
-    var copy = array.slice(0);
-    return function() {
-      if (copy.length < 1) { copy = array.slice(0); }
-      var index = Math.floor(Math.random() * copy.length);
-      var item = copy[index];
-      copy.splice(index, 1);
-      return item;
-    };
-  }
-  
-  
-  
+var color = ['Red', 'Orange', 'Yellow', 'Dark Green', 'Light Green', "Blue", 'Purple', 'Pink', 'White'];
+var words = [
+  ['I', "a", "the", "can", "see", "like", "to", "and", "you", "big"],
+  ['in', "it", "is", "we", "me", "my", "run", "play", "say", "look"],
+  ['for', "at", "am", "did", "little", "get", "well", "jump", "up", "on"],
+  ['help', "make", "ride", "down", "yes", "no", "so", "go", "he", "she", "be"],
+  ['have', "our", "out", "saw", "all", "do", "come", "out", "eat", "they"],
+  ['with', "here", "find", "blue", "two", "away", "are", "but", "ate", "good"],
+  ['into', "this", "that", "there", "came", "red", "three", "too", "ran", "must"],
+  ['went', "black", "who", "what", "where", "white", "not", "said", "want", "brown"],
+  ['soon', "new", "now", "well", "funny", "yellow", "under", "pretty", "four", "was"]
+];
+function getWord(){
+  if(word == word){
+    attributes.wordCounter += 1; 
+  var slotInent = intent.slots.type.WORD.value;
+     slotInent = word();
+    }else{
+      attributes.wordCounter = 0;
+      attributes.i +=1;
+    }
+}
+function randomNoRepeats(array) {
+  var copy = array.slice(0);
+  return function () {
+    if (copy.length < 1) {
+      copy = array.slice(0);
+    }
+    var index = Math.floor(Math.random() * copy.length);
+    var item = copy[index];
+    copy.splice(index, 1);
+    return item;
+  };
+}
+
+//Constents
+const i = 0;
+const wordCounter = 0;
+const welcomeMessage = `Welcome to Rainbow Words.`
+const helpMessage = "Would you like to play Rainbow Words still?"
+//   {
+//     "name": {
+//         "value": "I"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "a"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "the"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "can"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "see"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "like"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "to"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "and"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "you"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "big"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "in"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "it"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "is"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "we"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "me"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "my"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "run"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "play"
+//     }
+// },
+// {
+//     "name": {
+//         "value": "say"
+//     }
+// },

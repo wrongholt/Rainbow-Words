@@ -1,132 +1,59 @@
 {
-    "interactionModel": {
+  "interactionModel": {
       "languageModel": {
-        "invocationName": "rainbow words",
-
-        "intents": [
-          {
-            "name": "AMAZON.CancelIntent",
-            "samples": [
-  
-            ]
-          },
-          {
-            "name": "AMAZON.HelpIntent",
-            "samples": [
-  
-            ]
-          },
-          {
-            "name": "AMAZON.StopIntent",
-            "samples": [
-  
-            ]
-          },{
-            "name": "GetWordsIntent",
-            "samples":[
-              "first word",
-              "word",
-              "another word"
+          "invocationName": "rainbow words",
+          "intents": [
+              {
+                  "name": "AMAZON.CancelIntent",
+                  "samples": []
+              },
+              {
+                  "name": "AMAZON.HelpIntent",
+                  "samples": []
+              },
+              {
+                  "name": "AMAZON.StopIntent",
+                  "samples": []
+              },
+              {
+                  "name": "GetWordsIntent",
+                  "slots": [
+                      {
+                          "name": "word",
+                          "type": "WORD"
+                      }
+                  ],
+                  "samples": [
+                      "{word}"
+                  ]
+              },
+              {
+                  "name": "RainbowWordHandler",
+                  "slots": [],
+                  "samples": ["yes",
+                            "please start",
+                            "yea rainbow words",
+                            "may i have my first word",
+                            "give me a word please",
+                            "give me another word please"]
+              },
+              {
+                  "name": "AMAZON.NavigateHomeIntent",
+                  "samples": []
+              }
           ],
-          "slots":[
-            {
-              "name": "word",
-              "type": "WORD",
-              "samples":[
-                
-              ]
-            }
+          "types": [
+              {
+                  "name": "WORD",
+                  "values": [
+                      {
+                          "name": {
+                              "value": "{word}"
+                          }
+                      }
+                  ]
+              }
           ]
-          },
-          {
-            "name":"RainbowWordHandler"
-            
-        }
-        ],
-        "types": [{
-          "name":"WORD",
-          "values": [{
-           "name": {
-             "value": "I"
-           }
-         }, {
-           "name": {
-             "value": "a"
-           }
-         }, {
-           "name": {
-             "value": "the"
-           }
-         }, {
-           "name": {
-             "value": "can"
-           }
-         }, {
-           "name": {
-             "value": "see"
-           }
-         }, {
-           "name": {
-             "value": "like"
-           }
-         }, {
-           "name": {
-             "value": "to"
-           }
-         }, {
-           "name": {
-             "value": "and"
-           }
-         }, {
-           "name": {
-             "value": "you"
-           }
-         }, {
-           "name": {
-             "value": "big"
-           }
-         },{
-           "name": {
-             "value": "in"
-           }
-         }, {
-           "name": {
-             "value": "it"
-           }
-         }, {
-           "name": {
-             "value": "is"
-           }
-         }, {
-           "name": {
-             "value": "we"
-           }
-         }, {
-           "name": {
-             "value": "me"
-           }
-         }, {
-           "name": {
-             "value": "my"
-           }
-         }, {
-           "name": {
-             "value": "run"
-           }
-         }, {
-           "name": {
-             "value": "play"
-           }
-         }, {
-           "name": {
-             "value": "say"
-           }
-         }, {
-             "name": {
-               "value": "look"
-             }
-             }]}]
       }
-    }
-  }
-  
+   }
+}
