@@ -1,59 +1,68 @@
 {
-  "interactionModel": {
-      "languageModel": {
-          "invocationName": "rainbow words",
-          "intents": [
-              {
-                  "name": "AMAZON.CancelIntent",
-                  "samples": []
-              },
-              {
-                  "name": "AMAZON.HelpIntent",
-                  "samples": []
-              },
-              {
-                  "name": "AMAZON.StopIntent",
-                  "samples": []
-              },
-              {
-                  "name": "GetWordsIntent",
-                  "slots": [
-                      {
-                          "name": "word",
-                          "type": "WORD"
-                      }
-                  ],
-                  "samples": [
-                      "{word}"
-                  ]
-              },
-              {
-                  "name": "RainbowWordHandler",
-                  "slots": [],
-                  "samples": ["yes",
-                            "please start",
-                            "yea rainbow words",
-                            "may i have my first word",
-                            "give me a word please",
-                            "give me another word please"]
-              },
-              {
-                  "name": "AMAZON.NavigateHomeIntent",
-                  "samples": []
-              }
-          ],
-          "types": [
-              {
-                  "name": "WORD",
-                  "values": [
-                      {
-                          "name": {
-                              "value": "{word}"
-                          }
-                      }
-                  ]
-              }
-          ]
-      }
-   }
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "rainbow words",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "GetWordsIntent",
+                    "slots": [
+                        {
+                            "name": "word",
+                            "type": "WORD"
+                        },
+                        {
+                            "name": "GetWord",
+                            "type": "AMAZON.LITERAL"
+                        }
+                    ],
+                    "samples": [
+                        "{word}"
+                    ]
+                },
+                {
+                    "name": "RainbowWordHandler",
+                    "slots": [ {
+                        "name": "word",
+                        "type": "WORD"
+                    }],
+                    "samples": [
+                        "yes",
+                        "please start",
+                        "yea rainbow words",
+                        "may i have my first word",
+                        "give me a word please",
+                        "give me another word please"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                }
+            ],
+            "types": [
+                {
+                    "name": "WORD",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "the"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
 }

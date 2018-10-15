@@ -2,7 +2,7 @@
 /* eslint-disable  no-console */
 
 const Alexa = require('ask-sdk');
-
+const Utils = require("./utils.js");
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === `LaunchRequest`;
@@ -27,7 +27,7 @@ const LaunchRequestHandler = {
     return handlerInput.responseBuilder
       .speak(welcomeMessage)
       .reprompt(helpMessage)
-      .withSimpleCard("Welcome")
+      .withSimpleCard("Welcome to Rainbow Words","Where kids learn words.")
       .getResponse();
   },
 };
@@ -54,19 +54,19 @@ const RainbowWordHandler = {
 
     attributesManager.setPersistentAttributes(attributes);
     await attributesManager.savePersistentAttributes();
-
-
-    // wordCounter++;
+     console.log(this.intent.slots.word.value);
     var word = randomNoRepeats(words[i]);
-     console.log(intent.GetWordsIntentHandler.slots.type.WORD.value.value)
-   
-
+    // var slotIntent = intent.slots.WORD.value;
+    // slotIntent = word();
+    // console.log(slotIntent);
+    
+  //  Utils.createBodyTemplate1(handlerInput, `${word()}`,"https://www.publicdomainpictures.net/pictures/200000/velka/plain-red-background.jpg", "HIDDEN", `${word()}`);
 
     return responseBuilder
       .speak(speechText)
-      .withSimpleCard("Your word is...",`${word()}`)
+      .withSimpleCard(speechText, `${word()}`)
       .getResponse();
-
+      // this.response.speak('<break time="1ms"/>')
   },
 };
 const GetWordsIntentHandler = {
@@ -174,13 +174,15 @@ var words = [
   ['soon', "new", "now", "well", "funny", "yellow", "under", "pretty", "four", "was"]
 ];
 function getWord(){
-  if(word == word){
-    attributes.wordCounter += 1; 
-  var slotInent = intent.slots.type.WORD.value;
-     slotInent = word();
+  
+    var word = randomNoRepeats(words[i]);
+    var slotInent = this.event.request.intent.GetWordsIntentHandler.slots.WORD.value;
+    slotInent = word();
+  if(this.event.request.intent.GetWordsIntentHandler.slots.WORD.value == word()){
+    wordCounter += 1; 
     }else{
-      attributes.wordCounter = 0;
-      attributes.i +=1;
+      wordCounter = 0;
+      i +=1;
     }
 }
 function randomNoRepeats(array) {
