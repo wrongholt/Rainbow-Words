@@ -3,27 +3,13 @@
 
 const Alexa = require('ask-sdk');
 const Utils = require("./utils.js");
+var generateWord;
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === `LaunchRequest`;
   },
   handle(handlerInput) {
-    // if (has_display(request)) {
-    //   handlerInput.responseBuilder.directive({
-    //     "type": "Display.RenderTemplate",
-    //     "template": {
-    //       "type": "BodyTemplate6",
-    //       "backButton": "HIDDEN",
-    //       "backgroundImage": "https://www.publicdomainpictures.net/pictures/200000/velka/plain-red-background.jpg",
-    //       "textContent": {
-    //         "primaryText": {
-    //           "text": `Hello there mate!`,
-    //           "type": "PlainText"
-    //         }
-    //       }
-    //     }
-    //   });
-    // }
+  
     return handlerInput.responseBuilder
       .speak(welcomeMessage)
       .reprompt(helpMessage)
@@ -39,14 +25,11 @@ const RainbowWordHandler = {
       request.intent.name === 'RainbowWordHandler';
   },
   async handle(handlerInput) {
-
-    const colorValue = color[i];
-    let speechText = `Hello, you are on ${colorValue}. Get ready for your first word.`;
-
     const attributesManager = handlerInput.attributesManager;
     const responseBuilder = handlerInput.responseBuilder;
-
     const attributes = await attributesManager.getPersistentAttributes() || {};
+    const colorValue = color[i];
+    let speechText = `Hello, you are on ${colorValue}. Get ready for your first word.`;
 
     attributes.i = i;
     attributes.colorValue = colorValue;
@@ -54,42 +37,47 @@ const RainbowWordHandler = {
 
     attributesManager.setPersistentAttributes(attributes);
     await attributesManager.savePersistentAttributes();
-     console.log(this.intent.slots.word.value);
-    var word = randomNoRepeats(words[i]);
-    // var slotIntent = intent.slots.WORD.value;
-    // slotIntent = word();
-    // console.log(slotIntent);
-    
-  //  Utils.createBodyTemplate1(handlerInput, `${word()}`,"https://www.publicdomainpictures.net/pictures/200000/velka/plain-red-background.jpg", "HIDDEN", `${word()}`);
 
+    generateWord = randomNoRepeats(words[i]);
+   
     return responseBuilder
       .speak(speechText)
-      .withSimpleCard(speechText, `${word()}`)
+      .withSimpleCard(`${generateWord()}`)
       .getResponse();
-      // this.response.speak('<break time="1ms"/>')
   },
 };
 const GetWordsIntentHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
-    console.log("Inside WordsIntent");
-    return (request.type === 'IntentRequest' &&
-      request.intent.name === 'GetWordsIntent');
+    let filledSlots = request.intent.slots.theWord;
+        if (!filledSlots) {
+      return;
+  }
+let slotValues = getSlotValues(filledSlots);
+console.log(JSON.stringify(slotValues));
+    return request.type === 'IntentRequest' &&
+      request.intent.name === 'GetWordsIntentHandler';
   },
   async handle(handlerInput) {
+    const attributesManager = handlerInput.attributesManager;
+    const responseBuilder = handlerInput.responseBuilder;
+    const attributes = await attributesManager.getPersistentAttributes() || {};
+    
+    attributesManager.setPersistentAttributes(attributes);
+    await attributesManager.savePersistentAttributes();
+     if (slotValues == generateWord()) {
+            return responseBuilder
+              .speak("That is correct!" + `${generateWord()}`)
+              .getResponse();
+          } else {
+            return responseBuilder
+              .speak(`${generateWord()}`)
+              .withSimpleCard(`${generateWord()}`)
+              .getResponse();
+          }
 
-    if (intent.slots.type.WORD.value == word()) {
-      return responseBuilder
-        .speak("That is correct!", `${word()}`)
-        .getResponse();
-    } else {
-      return responseBuilder
-        .speak(`${word()}`)
-        .getResponse();
-    }
   },
 };
-
 const HelpIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
@@ -175,14 +163,14 @@ var words = [
 ];
 function getWord(){
   
-    var word = randomNoRepeats(words[i]);
+  generateWord = randomNoRepeats(words[i]);
     var slotInent = this.event.request.intent.GetWordsIntentHandler.slots.WORD.value;
-    slotInent = word();
-  if(this.event.request.intent.GetWordsIntentHandler.slots.WORD.value == word()){
-    wordCounter += 1; 
+    slotInent = generateWord();
+  if(this.event.request.intent.GetWordsIntentHandler.slots.WORD.value == generateWord()){
+    ++handlerInput.attributesManager.wordCounter; 
     }else{
-      wordCounter = 0;
-      i +=1;
+      handlerInput.attributesManager.wordCounter = 0;
+      handlerInput.attributesManager.i +=1;
     }
 }
 function randomNoRepeats(array) {
@@ -199,102 +187,9 @@ function randomNoRepeats(array) {
 }
 
 //Constents
+
 const i = 0;
 const wordCounter = 0;
 const welcomeMessage = `Welcome to Rainbow Words.`
 const helpMessage = "Would you like to play Rainbow Words still?"
-//   {
-//     "name": {
-//         "value": "I"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "a"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "the"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "can"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "see"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "like"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "to"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "and"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "you"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "big"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "in"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "it"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "is"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "we"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "me"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "my"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "run"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "play"
-//     }
-// },
-// {
-//     "name": {
-//         "value": "say"
-//     }
-// },
+

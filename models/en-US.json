@@ -16,29 +16,22 @@
                     "samples": []
                 },
                 {
-                    "name": "GetWordsIntent",
+                    "name": "GetWordsIntentHandler",
                     "slots": [
                         {
-                            "name": "word",
+                            "name": "theWord",
                             "type": "WORD"
-                        },
-                        {
-                            "name": "GetWord",
-                            "type": "AMAZON.LITERAL"
                         }
                     ],
                     "samples": [
-                        "{word}"
+                        "{theWord}"
                     ]
                 },
                 {
                     "name": "RainbowWordHandler",
-                    "slots": [ {
-                        "name": "word",
-                        "type": "WORD"
-                    }],
+                    "slots": [],
                     "samples": [
-                        "yes",
+                        "word me",
                         "please start",
                         "yea rainbow words",
                         "may i have my first word",
@@ -49,6 +42,46 @@
                 {
                     "name": "AMAZON.NavigateHomeIntent",
                     "samples": []
+                },
+                {
+                    "name": "AMAZON.MoreIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateSettingsIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NextIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PageUpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PageDownIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PreviousIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollRightIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollDownIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollLeftIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollUpIntent",
+                    "samples": []
                 }
             ],
             "types": [
@@ -57,7 +90,97 @@
                     "values": [
                         {
                             "name": {
+                                "value": "I"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "a"
+                            }
+                        },
+                        {
+                            "name": {
                                 "value": "the"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "can"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "see"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "like"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "to"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "and"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "you"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "big"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "in"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "it"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "is"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "we"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "me"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "my"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "run"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "play"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "say"
                             }
                         }
                     ]
