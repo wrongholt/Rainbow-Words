@@ -27,20 +27,13 @@
       "custom": {
         "endpoint": {
           "sourceDir": "lambda/custom"
-        }
+        },
+				"interfaces": [{
+					"type": "RENDER_TEMPLATE"
+				}]
       }
     },
     "manifestVersion": "1.0",
-    "privacyAndCompliance": {
-      "allowsPurchases": false,
-      "locales": {
-        "en-US": {
-         }
-      },
-      "isExportCompliant": true,
-      "containsAds": false,
-      "isChildDirected": false,
-      "usesPersonalInfo": false
-    }
+    "permissions": []
   }
 }

@@ -3,6 +3,7 @@
 
 const Alexa = require('ask-sdk');
 const Utils = require("./utils.js");
+const inlineCss = require('inline-css');
 var generateWord;
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
@@ -25,59 +26,82 @@ const RainbowWordHandler = {
       request.intent.name === 'RainbowWordHandler';
   },
   async handle(handlerInput) {
-    const attributesManager = handlerInput.attributesManager;
+    // const attributesManager = handlerInput.attributesManager;
     const responseBuilder = handlerInput.responseBuilder;
-    const attributes = await attributesManager.getPersistentAttributes() || {};
+    // const attributes = await attributesManager.getPersistentAttributes() || {};
     const colorValue = color[i];
-    let speechText = `Hello, you are on ${colorValue}. Get ready for your first word.`;
+    
 
-    attributes.i = i;
-    attributes.colorValue = colorValue;
-    attributes.wordCounter = wordCounter;
+    // attributes.i = i;
+    // attributes.colorValue = colorValue;
+    // attributes.wordCounter = wordCounter;
 
-    attributesManager.setPersistentAttributes(attributes);
-    await attributesManager.savePersistentAttributes();
+    // attributesManager.setPersistentAttributes(attributes);
+    // await attributesManager.savePersistentAttributes();
 
     generateWord = randomNoRepeats(words[i]);
-   
+    if (supportsDisplay(handlerInput)) {
+      
+      const bgImage = new Alexa.ImageHelper()
+        .addImageInstance(urls[i])
+        .getImage();
+      const title =`<style>div{color:blue;}${generateWord()}</style>`;
+      const bodyTemplate = 'BodyTemplate7';
+  
+      responseBuilder.addRenderTemplateDirective({
+        type: bodyTemplate,
+        token: "",
+        backButton: 'hidden',
+        backgroundImage: bgImage,
+        inlineCss(title, options)
+      });
+       speechText = `Hello, you are on ${colorValue}. Here is your first word.`;
+        }
+        
     return responseBuilder
       .speak(speechText)
-      .withSimpleCard(`${generateWord()}`)
       .getResponse();
   },
 };
 const GetWordsIntentHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
-    let filledSlots = request.intent.slots.theWord;
-        if (!filledSlots) {
-      return;
-  }
-let slotValues = getSlotValues(filledSlots);
-console.log(JSON.stringify(slotValues));
+
     return request.type === 'IntentRequest' &&
       request.intent.name === 'GetWordsIntentHandler';
   },
   async handle(handlerInput) {
-    const attributesManager = handlerInput.attributesManager;
+    // ++handlerInput.attributesManager.wordCounter; 
+    // const attributesManager = handlerInput.attributesManager;
     const responseBuilder = handlerInput.responseBuilder;
-    const attributes = await attributesManager.getPersistentAttributes() || {};
+    // const attributes = await attributesManager.getPersistentAttributes() || {};
     
-    attributesManager.setPersistentAttributes(attributes);
-    await attributesManager.savePersistentAttributes();
-     if (slotValues == generateWord()) {
-            return responseBuilder
-              .speak("That is correct!" + `${generateWord()}`)
-              .getResponse();
-          } else {
-            return responseBuilder
-              .speak(`${generateWord()}`)
-              .withSimpleCard(`${generateWord()}`)
-              .getResponse();
-          }
+    // attributesManager.setPersistentAttributes(attributes);
+    // await attributesManager.savePersistentAttributes();
+    if (supportsDisplay(handlerInput)) {
+      
+      const bgImage = new Alexa.ImageHelper()
+        .addImageInstance(urls[i])
+        .getImage();
+      const title = "That is correct! " + `${generateWord()}`;
+      const bodyTemplate = 'BodyTemplate7';
+  
+      responseBuilder.addRenderTemplateDirective({
+        type: bodyTemplate,
+        token: "",
+        backButton: 'hidden',
+        backgroundImage: bgImage,
+        title,
+      });
+       speechText = "That is correct! " + `${generateWord()}`;
+        }
+    return responseBuilder
+      .speak(speechText)
+      .getResponse();      
 
   },
 };
+
 const HelpIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
@@ -133,7 +157,7 @@ const ErrorHandler = {
   },
 };
 
-const skillBuilder = Alexa.SkillBuilders.standard();
+const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
   .addRequestHandlers(
@@ -145,10 +169,10 @@ exports.handler = skillBuilder
     SessionEndedRequestHandler
   )
   .addErrorHandlers(ErrorHandler)
-  .withTableName('rainbow-words')
-  .withAutoCreateTable(true)
+  // .withTableName('rainbow-words')
+  // .withAutoCreateTable(true)
   .lambda();
-
+var urls = ["https://wallpapertag.com/wallpaper/middle/6/9/9/133442-download-free-plain-red-background-1920x1080-for-tablet.jpg"]
 var color = ['Red', 'Orange', 'Yellow', 'Dark Green', 'Light Green', "Blue", 'Purple', 'Pink', 'White'];
 var words = [
   ['I', "a", "the", "can", "see", "like", "to", "and", "you", "big"],
@@ -161,6 +185,17 @@ var words = [
   ['went', "black", "who", "what", "where", "white", "not", "said", "want", "brown"],
   ['soon', "new", "now", "well", "funny", "yellow", "under", "pretty", "four", "was"]
 ];
+
+function supportsDisplay(handlerInput) {
+  const hasDisplay =
+    handlerInput.requestEnvelope.context &&
+    handlerInput.requestEnvelope.context.System &&
+    handlerInput.requestEnvelope.context.System.device &&
+    handlerInput.requestEnvelope.context.System.device.supportedInterfaces &&
+    handlerInput.requestEnvelope.context.System.device.supportedInterfaces.Display;
+  return hasDisplay;
+}
+
 function getWord(){
   
   generateWord = randomNoRepeats(words[i]);
@@ -180,14 +215,13 @@ function randomNoRepeats(array) {
       copy = array.slice(0);
     }
     var index = Math.floor(Math.random() * copy.length);
-    var item = copy[index];
+   item = copy[index];
     copy.splice(index, 1);
     return item;
   };
 }
 
 //Constents
-
 const i = 0;
 const wordCounter = 0;
 const welcomeMessage = `Welcome to Rainbow Words.`
