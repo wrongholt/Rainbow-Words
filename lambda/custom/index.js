@@ -2,19 +2,20 @@
 /* eslint-disable  no-console */
 
 const Alexa = require('ask-sdk');
-const Utils = require("./utils.js");
-const inlineCss = require('inline-css');
 var generateWord;
+var i = 0;
+var wordCounter = 0;
+var databaseWord;
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === `LaunchRequest`;
   },
   handle(handlerInput) {
-  
+
     return handlerInput.responseBuilder
       .speak(welcomeMessage)
       .reprompt(helpMessage)
-      .withSimpleCard("Welcome to Rainbow Words","Where kids learn words.")
+      .withSimpleCard("Welcome to Rainbow Words", "Where kids learn words.")
       .getResponse();
   },
 };
@@ -26,38 +27,44 @@ const RainbowWordHandler = {
       request.intent.name === 'RainbowWordHandler';
   },
   async handle(handlerInput) {
-    // const attributesManager = handlerInput.attributesManager;
+    const attributesManager = handlerInput.attributesManager;
     const responseBuilder = handlerInput.responseBuilder;
-    // const attributes = await attributesManager.getPersistentAttributes() || {};
-    const colorValue = color[i];
-    
-
-    // attributes.i = i;
-    // attributes.colorValue = colorValue;
-    // attributes.wordCounter = wordCounter;
-
-    // attributesManager.setPersistentAttributes(attributes);
-    // await attributesManager.savePersistentAttributes();
-
+    const attributes = await attributesManager.getPersistentAttributes() || {};
+    var i = attributes.i;
+    var colorValue = color[i];
     generateWord = randomNoRepeats(words[i]);
+    var wordCounter = attributes.wordCounter;
+    wordCounter += 1;
+
+    if (wordCounter == 30) {
+      i += 1;
+      var wordCounter = 0;
+    }
+    attributes.generateWord = generateWord();
+    attributes.i = i;
+    attributes.colorValue = colorValue;
+    attributes.wordCounter = wordCounter;
+    attributesManager.setPersistentAttributes(attributes);
+    await attributesManager.savePersistentAttributes();
+
+    databaseWord = attributes.generateWord;
     if (supportsDisplay(handlerInput)) {
-      
+
       const bgImage = new Alexa.ImageHelper()
         .addImageInstance(urls[i])
         .getImage();
-      const title =`<style>div{color:blue;}${generateWord()}</style>`;
+      const title = `${databaseWord}`;
       const bodyTemplate = 'BodyTemplate7';
-  
+
       responseBuilder.addRenderTemplateDirective({
         type: bodyTemplate,
         token: "",
         backButton: 'hidden',
         backgroundImage: bgImage,
-        inlineCss(title, options)
+        title,
       });
-       speechText = `Hello, you are on ${colorValue}. Here is your first word.`;
-        }
-        
+      speechText = `Hello, you are on ${colorValue}. Here is your first word.`;
+    }
     return responseBuilder
       .speak(speechText)
       .getResponse();
@@ -71,21 +78,115 @@ const GetWordsIntentHandler = {
       request.intent.name === 'GetWordsIntentHandler';
   },
   async handle(handlerInput) {
-    // ++handlerInput.attributesManager.wordCounter; 
-    // const attributesManager = handlerInput.attributesManager;
+    const attributesManager = handlerInput.attributesManager;
     const responseBuilder = handlerInput.responseBuilder;
-    // const attributes = await attributesManager.getPersistentAttributes() || {};
+    const attributes = await attributesManager.getPersistentAttributes() || {};
+    var i = attributes.i;
+    const request = handlerInput.requestEnvelope.request;
+    attributesManager.setPersistentAttributes(attributes);
+    await attributesManager.savePersistentAttributes();
+    if (request.intent.slots &&
+      request.intent.slots.theWord &&
+      request.intent.slots.theWord.value &&
+      request.intent.slots.theWord.resolutions &&
+      request.intent.slots.theWord.resolutions.resolutionsPerAuthority &&
+      request.intent.slots.theWord.resolutions.resolutionsPerAuthority[0] &&
+      request.intent.slots.theWord.resolutions.resolutionsPerAuthority[0].values &&
+      request.intent.slots.theWord.resolutions.resolutionsPerAuthority[0].values[0] &&
+      request.intent.slots.theWord.resolutions.resolutionsPerAuthority[0].values[0].value &&
+      request.intent.slots.theWord.resolutions.resolutionsPerAuthority[0].values[0].value.name) {
+      if (request.intent.slots.theWord.value == databaseWord) {
+        speechText = "That is correct! " + `${databaseWord}`;
+        responseBoolean = true;
+
+        if (supportsDisplay(handlerInput)) {
+
+          const bgImage = new Alexa.ImageHelper()
+            .addImageInstance(urls[i])
+            .getImage();
+          const title = speechText;
+          const bodyTemplate = 'BodyTemplate7';
+
+          responseBuilder.addRenderTemplateDirective({
+            type: bodyTemplate,
+            token: "",
+            backButton: 'hidden',
+            backgroundImage: bgImage,
+            title,
+          });
+
+        }
+        return responseBuilder
+          .speak(speechText)
+          .withSimpleCard(speechText)
+          .getResponse();
+      } else {
+        speechText = "That is not correct! The word is: \"" + `${databaseWord}\"`;
+        responseBoolean = false;
+        if (supportsDisplay(handlerInput)) {
+
+          const bgImage = new Alexa.ImageHelper()
+            .addImageInstance(urls[i])
+            .getImage();
+          const title = speechText;
+          const bodyTemplate = 'BodyTemplate7';
+
+          responseBuilder.addRenderTemplateDirective({
+            type: bodyTemplate,
+            token: "",
+            backButton: 'hidden',
+            backgroundImage: bgImage,
+            title,
+          });
+
+        }
+
+        return responseBuilder
+          .speak(`${databaseWord}`)
+          .withSimpleCard(`${databaseWord}`)
+          .getResponse();
+      }
+    }
+  },
+};
+const AnotherWordHandler = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+
+    return request.type === 'IntentRequest' &&
+      request.intent.name === 'AnotherWordHandler';
+  },
+  async handle(handlerInput) {
+    const attributesManager = handlerInput.attributesManager;
+    const responseBuilder = handlerInput.responseBuilder;
+    const attributes = await attributesManager.getPersistentAttributes() || {};
+    var i = attributes.i;
+    generateWord = randomNoRepeats(words[i]);
+    attributes.generateWord = generateWord();
+
+    var wordCounter = attributes.wordCounter;
+    wordCounter += 1;
+if (wordCounter == 30) {
+      i += 1;
+      var wordCounter = 0;
+    }
+    attributes.i = i;
+    attributes.wordCounter = wordCounter;
+
+    attributesManager.setPersistentAttributes(attributes);
+    await attributesManager.savePersistentAttributes();
     
-    // attributesManager.setPersistentAttributes(attributes);
-    // await attributesManager.savePersistentAttributes();
+    databaseWord = attributes.generateWord;
+
+
     if (supportsDisplay(handlerInput)) {
-      
+
       const bgImage = new Alexa.ImageHelper()
         .addImageInstance(urls[i])
         .getImage();
-      const title = "That is correct! " + `${generateWord()}`;
+      const title = databaseWord;
       const bodyTemplate = 'BodyTemplate7';
-  
+
       responseBuilder.addRenderTemplateDirective({
         type: bodyTemplate,
         token: "",
@@ -93,15 +194,16 @@ const GetWordsIntentHandler = {
         backgroundImage: bgImage,
         title,
       });
-       speechText = "That is correct! " + `${generateWord()}`;
-        }
+
+    }
+
+    speechText = "Do you need help?"
     return responseBuilder
       .speak(speechText)
-      .getResponse();      
-
+      .withSimpleCard(`${databaseWord}`)
+      .getResponse();
   },
 };
-
 const HelpIntentHandler = {
   canHandle(handlerInput) {
     return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
@@ -157,27 +259,37 @@ const ErrorHandler = {
   },
 };
 
-const skillBuilder = Alexa.SkillBuilders.custom();
+const skillBuilder = Alexa.SkillBuilders.standard();
 
 exports.handler = skillBuilder
   .addRequestHandlers(
     LaunchRequestHandler,
     RainbowWordHandler,
     GetWordsIntentHandler,
+    AnotherWordHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler
   )
   .addErrorHandlers(ErrorHandler)
-  // .withTableName('rainbow-words')
-  // .withAutoCreateTable(true)
+  .withTableName('rainbow-words')
+  .withAutoCreateTable(true)
   .lambda();
-var urls = ["https://wallpapertag.com/wallpaper/middle/6/9/9/133442-download-free-plain-red-background-1920x1080-for-tablet.jpg"]
+var urls = ["https://s3.amazonaws.com/alexa.skill.rainbowwords/background-board-carpentry-960137.jpg",
+  "https://s3.amazonaws.com/alexa.skill.rainbowwords/abstract-background-carpentry-268976.jpg",
+  "https://s3.amazonaws.com/alexa.skill.rainbowwords/abstract-art-background-1020317.jpg",
+  "https://s3.amazonaws.com/alexa.skill.rainbowwords/artificial-background-close-up-958168.jpg",
+  "https://s3.amazonaws.com/alexa.skill.rainbowwords/abstract-art-artificial-131634.jpg",
+  "https://s3.amazonaws.com/alexa.skill.rainbowwords/backgrounds-blank-blue-953214.jpg",
+  "https://s3.amazonaws.com/alexa.skill.rainbowwords/pexels-photo-355762.jpeg",
+  "https://s3.amazonaws.com/alexa.skill.rainbowwords/abstract-attractive-backdrop-838423.jpg",
+  "https://s3.amazonaws.com/alexa.skill.rainbowwords/cement-color-concrete-1260727.jpg"
+]
 var color = ['Red', 'Orange', 'Yellow', 'Dark Green', 'Light Green', "Blue", 'Purple', 'Pink', 'White'];
 var words = [
   ['I', "a", "the", "can", "see", "like", "to", "and", "you", "big"],
   ['in', "it", "is", "we", "me", "my", "run", "play", "say", "look"],
-  ['for', "at", "am", "did", "little", "get", "well", "jump", "up", "on"],
+  ['for', "at", "am", "did", "little", "get", "will", "jump", "up", "on"],
   ['help', "make", "ride", "down", "yes", "no", "so", "go", "he", "she", "be"],
   ['have', "our", "out", "saw", "all", "do", "come", "out", "eat", "they"],
   ['with', "here", "find", "blue", "two", "away", "are", "but", "ate", "good"],
@@ -196,18 +308,6 @@ function supportsDisplay(handlerInput) {
   return hasDisplay;
 }
 
-function getWord(){
-  
-  generateWord = randomNoRepeats(words[i]);
-    var slotInent = this.event.request.intent.GetWordsIntentHandler.slots.WORD.value;
-    slotInent = generateWord();
-  if(this.event.request.intent.GetWordsIntentHandler.slots.WORD.value == generateWord()){
-    ++handlerInput.attributesManager.wordCounter; 
-    }else{
-      handlerInput.attributesManager.wordCounter = 0;
-      handlerInput.attributesManager.i +=1;
-    }
-}
 function randomNoRepeats(array) {
   var copy = array.slice(0);
   return function () {
@@ -215,15 +315,17 @@ function randomNoRepeats(array) {
       copy = array.slice(0);
     }
     var index = Math.floor(Math.random() * copy.length);
-   item = copy[index];
+    var item = copy[index];
     copy.splice(index, 1);
     return item;
   };
 }
 
+function sleep(milliseconds) {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
 //Constents
-const i = 0;
-const wordCounter = 0;
+
+
 const welcomeMessage = `Welcome to Rainbow Words.`
 const helpMessage = "Would you like to play Rainbow Words still?"
-

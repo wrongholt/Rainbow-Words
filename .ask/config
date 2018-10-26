@@ -21,7 +21,7 @@
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "a79e93aa54bd676319e8e938bfd1763b"
+            "eTag": "f009e42b50da96c739c0e8010c977140"
           }
         },
         "lambda": [
@@ -32,7 +32,7 @@
             "alexaUsage": [
               "custom/default"
             ],
-            "revisionId": "c29a8385-d334-42a9-8ba7-9df3b6586e7e"
+            "revisionId": "9d97676e-d398-4454-860d-db0d530e6d71"
           },
           {
             "arn": "arn:aws:lambda:us-east-1:837782226885:function:rainbow_words",
