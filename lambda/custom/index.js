@@ -12,10 +12,12 @@ const LaunchRequestHandler = {
   },
   handle(handlerInput) {
 
+    const title = "Welcome to Rainbow Words";
+
     return handlerInput.responseBuilder
       .speak(welcomeMessage)
       .reprompt(helpMessage)
-      .withSimpleCard("Welcome to Rainbow Words", "Where kids learn words.")
+      .withSimpleCard(title, "Where kids learn words.")
       .getResponse();
   },
 };
@@ -31,15 +33,20 @@ const RainbowWordHandler = {
     const responseBuilder = handlerInput.responseBuilder;
     const attributes = await attributesManager.getPersistentAttributes() || {};
     var i = attributes.i;
-    var colorValue = color[i];
-    generateWord = randomNoRepeats(words[i]);
     var wordCounter = attributes.wordCounter;
-    wordCounter += 1;
 
-    if (wordCounter == 30) {
+    if (wordCounter == 31) {
       i += 1;
       var wordCounter = 0;
     }
+    if (i == 9) {
+      i = 0;
+    }
+    var colorValue = color[i];
+    generateWord = randomNoRepeats(words[i]);
+    wordCounter += 1;
+
+
     attributes.generateWord = generateWord();
     attributes.i = i;
     attributes.colorValue = colorValue;
@@ -53,7 +60,8 @@ const RainbowWordHandler = {
       const bgImage = new Alexa.ImageHelper()
         .addImageInstance(urls[i])
         .getImage();
-      const title = `${databaseWord}`;
+      const title = `<div align='center'><font size="5"><b>${databaseWord}</b></font></div>`;
+
       const bodyTemplate = 'BodyTemplate7';
 
       responseBuilder.addRenderTemplateDirective({
@@ -67,6 +75,7 @@ const RainbowWordHandler = {
     }
     return responseBuilder
       .speak(speechText)
+      .withSimpleCard(`${databaseWord}`)
       .getResponse();
   },
 };
@@ -96,7 +105,8 @@ const GetWordsIntentHandler = {
       request.intent.slots.theWord.resolutions.resolutionsPerAuthority[0].values[0].value &&
       request.intent.slots.theWord.resolutions.resolutionsPerAuthority[0].values[0].value.name) {
       if (request.intent.slots.theWord.value == databaseWord) {
-        speechText = "That is correct! " + `${databaseWord}`;
+        textTitle = "<div align='center'><font size='5'><b>That is correct! \"" + `${databaseWord}\"</b></font></div>`;
+        speechText = `That is correct! \"${databaseWord}\"`
         responseBoolean = true;
 
         if (supportsDisplay(handlerInput)) {
@@ -104,7 +114,7 @@ const GetWordsIntentHandler = {
           const bgImage = new Alexa.ImageHelper()
             .addImageInstance(urls[i])
             .getImage();
-          const title = speechText;
+          const title = textTitle;
           const bodyTemplate = 'BodyTemplate7';
 
           responseBuilder.addRenderTemplateDirective({
@@ -121,14 +131,15 @@ const GetWordsIntentHandler = {
           .withSimpleCard(speechText)
           .getResponse();
       } else {
-        speechText = "That is not correct! The word is: \"" + `${databaseWord}\"`;
+        textTitle = '<div align="center"><font size="5"><b>That is not correct! The word is: \"' + `${databaseWord}\"</b></font></div>`;
+        speechText = `That is not correct! The word is: \"${databaseWord}\"`
         responseBoolean = false;
         if (supportsDisplay(handlerInput)) {
 
           const bgImage = new Alexa.ImageHelper()
             .addImageInstance(urls[i])
             .getImage();
-          const title = speechText;
+          const title = textTitle;
           const bodyTemplate = 'BodyTemplate7';
 
           responseBuilder.addRenderTemplateDirective({
@@ -142,8 +153,8 @@ const GetWordsIntentHandler = {
         }
 
         return responseBuilder
-          .speak(`${databaseWord}`)
-          .withSimpleCard(`${databaseWord}`)
+          .speak(speechText)
+          .withSimpleCard(speechText)
           .getResponse();
       }
     }
@@ -161,30 +172,30 @@ const AnotherWordHandler = {
     const responseBuilder = handlerInput.responseBuilder;
     const attributes = await attributesManager.getPersistentAttributes() || {};
     var i = attributes.i;
-    generateWord = randomNoRepeats(words[i]);
-    attributes.generateWord = generateWord();
-
     var wordCounter = attributes.wordCounter;
-    wordCounter += 1;
-if (wordCounter == 30) {
+
+    if (wordCounter == 30) {
       i += 1;
       var wordCounter = 0;
     }
+    if (i == 9) {
+      i = 0;
+    }
+    generateWord = randomNoRepeats(words[i]);
+    attributes.generateWord = generateWord();
+    wordCounter += 1;
     attributes.i = i;
     attributes.wordCounter = wordCounter;
-
     attributesManager.setPersistentAttributes(attributes);
     await attributesManager.savePersistentAttributes();
-    
     databaseWord = attributes.generateWord;
-
 
     if (supportsDisplay(handlerInput)) {
 
       const bgImage = new Alexa.ImageHelper()
         .addImageInstance(urls[i])
         .getImage();
-      const title = databaseWord;
+      const title = `<div align='center'><font size="5"><b>${databaseWord}</b></font></div>`;
       const bodyTemplate = 'BodyTemplate7';
 
       responseBuilder.addRenderTemplateDirective({
@@ -197,9 +208,11 @@ if (wordCounter == 30) {
 
     }
 
-    speechText = "Do you need help?"
+    speechText = "Here's your word."
+    speechTextReprompt = "Do you need help?"
     return responseBuilder
       .speak(speechText)
+      .reprompt(speechTextReprompt)
       .withSimpleCard(`${databaseWord}`)
       .getResponse();
   },
@@ -321,11 +334,6 @@ function randomNoRepeats(array) {
   };
 }
 
-function sleep(milliseconds) {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
-}
 //Constents
-
-
 const welcomeMessage = `Welcome to Rainbow Words.`
 const helpMessage = "Would you like to play Rainbow Words still?"
