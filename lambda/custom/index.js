@@ -11,9 +11,7 @@ const LaunchRequestHandler = {
     return handlerInput.requestEnvelope.request.type === `LaunchRequest`;
   },
   handle(handlerInput) {
-
     const title = "Welcome to Rainbow Words";
-
     return handlerInput.responseBuilder
       .speak(welcomeMessage)
       .reprompt(helpMessage)
@@ -24,7 +22,6 @@ const LaunchRequestHandler = {
 const RainbowWordHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
-
     return request.type === 'IntentRequest' &&
       request.intent.name === 'RainbowWordHandler';
   },
@@ -34,7 +31,6 @@ const RainbowWordHandler = {
     const attributes = await attributesManager.getPersistentAttributes() || {};
     var i = attributes.i;
     var wordCounter = attributes.wordCounter;
-
     if (wordCounter == 31) {
       i += 1;
       var wordCounter = 0;
@@ -45,15 +41,12 @@ const RainbowWordHandler = {
     var colorValue = color[i];
     generateWord = randomNoRepeats(words[i]);
     wordCounter += 1;
-
-
     attributes.generateWord = generateWord();
     attributes.i = i;
     attributes.colorValue = colorValue;
     attributes.wordCounter = wordCounter;
     attributesManager.setPersistentAttributes(attributes);
     await attributesManager.savePersistentAttributes();
-
     databaseWord = attributes.generateWord;
     if (supportsDisplay(handlerInput)) {
 
@@ -61,9 +54,7 @@ const RainbowWordHandler = {
         .addImageInstance(urls[i])
         .getImage();
       const title = `<div align='center'><font size="5"><b>${databaseWord}</b></font></div>`;
-
       const bodyTemplate = 'BodyTemplate7';
-
       responseBuilder.addRenderTemplateDirective({
         type: bodyTemplate,
         token: "",
@@ -108,15 +99,12 @@ const GetWordsIntentHandler = {
         textTitle = "<div align='center'><font size='5'><b>That is correct! \"" + `${databaseWord}\"</b></font></div>`;
         speechText = `That is correct! \"${databaseWord}\"`
         responseBoolean = true;
-
         if (supportsDisplay(handlerInput)) {
-
           const bgImage = new Alexa.ImageHelper()
             .addImageInstance(urls[i])
             .getImage();
           const title = textTitle;
           const bodyTemplate = 'BodyTemplate7';
-
           responseBuilder.addRenderTemplateDirective({
             type: bodyTemplate,
             token: "",
@@ -124,7 +112,6 @@ const GetWordsIntentHandler = {
             backgroundImage: bgImage,
             title,
           });
-
         }
         return responseBuilder
           .speak(speechText)
@@ -135,13 +122,11 @@ const GetWordsIntentHandler = {
         speechText = `That is not correct! The word is: \"${databaseWord}\"`
         responseBoolean = false;
         if (supportsDisplay(handlerInput)) {
-
           const bgImage = new Alexa.ImageHelper()
             .addImageInstance(urls[i])
             .getImage();
           const title = textTitle;
           const bodyTemplate = 'BodyTemplate7';
-
           responseBuilder.addRenderTemplateDirective({
             type: bodyTemplate,
             token: "",
@@ -149,9 +134,7 @@ const GetWordsIntentHandler = {
             backgroundImage: bgImage,
             title,
           });
-
         }
-
         return responseBuilder
           .speak(speechText)
           .withSimpleCard(speechText)
@@ -191,13 +174,11 @@ const AnotherWordHandler = {
     databaseWord = attributes.generateWord;
 
     if (supportsDisplay(handlerInput)) {
-
       const bgImage = new Alexa.ImageHelper()
         .addImageInstance(urls[i])
         .getImage();
       const title = `<div align='center'><font size="5"><b>${databaseWord}</b></font></div>`;
       const bodyTemplate = 'BodyTemplate7';
-
       responseBuilder.addRenderTemplateDirective({
         type: bodyTemplate,
         token: "",
@@ -205,9 +186,7 @@ const AnotherWordHandler = {
         backgroundImage: bgImage,
         title,
       });
-
     }
-
     speechText = "Here's your word."
     speechTextReprompt = "Do you need help?"
     return responseBuilder
