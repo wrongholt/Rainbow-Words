@@ -6,20 +6,20 @@
           "summary": "For kids to learn words.",
           "examplePhrases": [
             "Alexa open rainbow words",
-            "Alexa tell rainbow words my name is Bill",
+            "Alexa tell rainbow words to give me a word",
             "Alexa ask rainbow words to start"
           ],
           "keywords": [
-            "keyword1",
-            "keyword2",
-            "keyword3"
+            "Rainbow Words",
+            "Kindergarten words",
+            "Sight Words"
           ],
           "name": "rainbow_words",
-          "description": "This is a skill for Kindergartners to learn how to spell and say certain words."
+          "description": "This is a skill for Kindergartners to learn how to read and spell certain words."
         }
       },
       "isAvailableWorldwide": true,
-      "testingInstructions": "No special instructions.",
+      "testingInstructions": "This skill is to utilize speech and display weather it is on a phone or on show or tap.",
       "category": "EDUCATION_AND_REFERENCE",
       "distributionCountries": []
     },

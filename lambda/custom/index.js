@@ -314,5 +314,5 @@ function randomNoRepeats(array) {
 }
 
 //Constents
-const welcomeMessage = `Welcome to Rainbow Words.`
-const helpMessage = "Would you like to play Rainbow Words still?"
+const welcomeMessage = `Welcome to Rainbow Words. To start say start, word or word me`
+const helpMessage = "Would you like to play Rainbow Words still? If so say word, word me or next."
